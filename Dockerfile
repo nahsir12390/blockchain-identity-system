@@ -65,7 +65,7 @@ COPY . .
 
 RUN composer dump-autoload --optimize \
     && chmod +x docker/render-start.sh \
-    && chown -R www-data:www-data storage bootstrap/cache
+    && chown -R www-data:www-data database storage bootstrap/cache
 
 EXPOSE 80
 
