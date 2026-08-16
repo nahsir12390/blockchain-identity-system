@@ -1,0 +1,46 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_24-bfe780afe52c499f6e34e4a1959a43f51d77bfbc",
+  "solcVersion": "0.8.24",
+  "solcLongVersion": "0.8.24+commit.e11b9ed9",
+  "compilerType": "solc",
+  "userSourceNameMap": {
+    "contracts/DecentralizedIdentityRegistry.sol": "project/contracts/DecentralizedIdentityRegistry.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/DecentralizedIdentityRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.24;\n\ncontract DecentralizedIdentityRegistry {\n    enum IdentityStatus {\n        Pending,\n        Verified,\n        Rejected,\n        Revoked\n    }\n\n    struct IdentityProof {\n        bytes32 identityHash;\n        bytes32 documentHash;\n        bytes32 blockHash;\n        IdentityStatus status;\n        address issuer;\n        uint256 updatedAt;\n    }\n\n    mapping(bytes32 => IdentityProof) private proofs;\n\n    event IdentitySubmitted(bytes32 indexed didHash, bytes32 identityHash, address indexed issuer);\n    event IdentityVerified(bytes32 indexed didHash, bytes32 blockHash, address indexed verifier);\n    event IdentityRejected(bytes32 indexed didHash, address indexed verifier);\n    event IdentityRevoked(bytes32 indexed didHash, address indexed verifier);\n\n    function submitIdentity(bytes32 didHash, bytes32 identityHash, bytes32 documentHash) external {\n        proofs[didHash] = IdentityProof({\n            identityHash: identityHash,\n            documentHash: documentHash,\n            blockHash: bytes32(0),\n            status: IdentityStatus.Pending,\n            issuer: msg.sender,\n            updatedAt: block.timestamp\n        });\n\n        emit IdentitySubmitted(didHash, identityHash, msg.sender);\n    }\n\n    function verifyIdentity(bytes32 didHash, bytes32 blockHash) external {\n        IdentityProof storage proof = proofs[didHash];\n        require(proof.identityHash != bytes32(0), \"Identity proof not found\");\n\n        proof.blockHash = blockHash;\n        proof.status = IdentityStatus.Verified;\n        proof.updatedAt = block.timestamp;\n\n        emit IdentityVerified(didHash, blockHash, msg.sender);\n    }\n\n    function rejectIdentity(bytes32 didHash) external {\n        IdentityProof storage proof = proofs[didHash];\n        require(proof.identityHash != bytes32(0), \"Identity proof not found\");\n\n        proof.status = IdentityStatus.Rejected;\n        proof.updatedAt = block.timestamp;\n\n        emit IdentityRejected(didHash, msg.sender);\n    }\n\n    function revokeIdentity(bytes32 didHash) external {\n        IdentityProof storage proof = proofs[didHash];\n        require(proof.identityHash != bytes32(0), \"Identity proof not found\");\n\n        proof.status = IdentityStatus.Revoked;\n        proof.updatedAt = block.timestamp;\n\n        emit IdentityRevoked(didHash, msg.sender);\n    }\n\n    function getIdentity(bytes32 didHash) external view returns (IdentityProof memory) {\n        return proofs[didHash];\n    }\n}\n"
+      }
+    }
+  }
+}
