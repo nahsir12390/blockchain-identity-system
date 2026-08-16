@@ -58,6 +58,7 @@ RUN apt-get update \
 
 WORKDIR /var/www/html
 
+COPY --from=vendor /usr/bin/composer /usr/bin/composer
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=assets /app/public/build ./public/build
 COPY . .
