@@ -5,7 +5,7 @@
     </head>
     <body class="min-h-screen bg-zinc-950 antialiased text-white">
         <div class="grid min-h-svh lg:grid-cols-[1.05fr_.95fr]">
-            <section class="relative hidden overflow-hidden border-r border-white/10 bg-zinc-950 p-10 lg:flex lg:flex-col lg:justify-between">
+            <section class="chain-grid relative hidden overflow-hidden border-r border-white/10 bg-zinc-950 p-10 lg:flex lg:flex-col lg:justify-between">
                 <div>
                     <a href="{{ route('home') }}" class="inline-flex items-center gap-3">
                         <span class="flex size-11 items-center justify-center rounded-xl bg-emerald-400 text-zinc-950">
@@ -19,13 +19,14 @@
 
                     <div class="mt-20 max-w-xl">
                         <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Secure Identity Gateway</p>
-                        <h1 class="mt-4 text-4xl font-semibold leading-tight">Enter the decentralized identity control plane.</h1>
+                        <h1 class="mt-4 text-4xl font-semibold leading-tight">Your identity starts here.</h1>
                         <p class="mt-5 text-sm leading-7 text-zinc-300">
                             Authenticate securely, enroll a DID, upload private proof documents, and track every identity decision through the tamper-evident ledger.
                         </p>
                     </div>
                 </div>
 
+                <x-chain-network />
                 <div class="grid gap-3">
                     @foreach ([
                         ['01', 'Password and session protection'],

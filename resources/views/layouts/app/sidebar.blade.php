@@ -48,7 +48,7 @@
 
             <div class="mx-3 mb-3 rounded-xl border border-emerald-400/20 bg-zinc-950 p-4 text-white">
                 <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Chain Status</p>
-                <p class="mt-2 text-sm font-semibold">{{ config('blockchain.enabled') ? 'Anchoring online' : 'Local proof mode' }}</p>
+                <p class="mt-2 text-sm font-semibold">{{ config('blockchain.enabled') ? 'Anchoring enabled' : 'Local proof mode' }}</p>
                 <p class="mt-2 truncate font-mono text-[11px] text-zinc-400">{{ config('blockchain.network') }}</p>
             </div>
 

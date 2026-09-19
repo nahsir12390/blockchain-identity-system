@@ -11,12 +11,12 @@
     @endphp
 
     <div class="space-y-6">
-        <section class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-950 text-white shadow-sm dark:border-zinc-700">
+        <section class="chain-grid overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-950 text-white shadow-sm dark:border-zinc-700">
             <div class="grid gap-0 lg:grid-cols-[1.3fr_.7fr]">
                 <div class="p-6 sm:p-8">
                     <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Decentralized Identity Network</p>
                     <div class="mt-5 max-w-3xl">
-                        <h1 class="text-3xl font-semibold tracking-normal sm:text-4xl">Blockchain-Based Cybersecurity System</h1>
+                        <h1 class="text-3xl font-semibold tracking-normal sm:text-4xl">Your identity command center</h1>
                         <p class="mt-3 text-sm leading-6 text-zinc-300">
                             Manage DIDs, anchor identity lifecycle events to the smart contract, and inspect the proof ledger for tamper evidence.
                         </p>
@@ -34,18 +34,18 @@
                         <div class="rounded-xl border border-white/10 bg-white/[0.04] p-4">
                             <p class="text-xs text-zinc-400">Anchoring</p>
                             <p class="mt-2 text-sm font-semibold {{ config('blockchain.enabled') ? 'text-emerald-300' : 'text-amber-300' }}">
-                                {{ config('blockchain.enabled') ? 'Online' : 'Local fallback' }}
+                                {{ config('blockchain.enabled') ? 'Enabled' : 'Local fallback' }}
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="border-t border-white/10 bg-zinc-900/80 p-6 lg:border-s lg:border-t-0">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-zinc-400">Live Proof Block</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-zinc-400">Latest recorded proof</p>
                     <div class="mt-5 rounded-xl border border-emerald-400/20 bg-emerald-400/10 p-5">
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-emerald-200">Block height</span>
-                            <span class="rounded-full bg-emerald-300 px-3 py-1 text-xs font-semibold text-zinc-950">Synced</span>
+                            <span class="rounded-full bg-emerald-300 px-3 py-1 text-xs font-semibold text-zinc-950">{{ $latestBlock ? 'Recorded' : 'Awaiting proof' }}</span>
                         </div>
                         <p class="mt-4 text-4xl font-semibold">{{ $latestBlock?->block_number ?? 0 }}</p>
                         <p class="mt-4 break-all font-mono text-xs leading-5 text-emerald-100">

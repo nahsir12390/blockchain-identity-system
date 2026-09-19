@@ -18,20 +18,20 @@
     --color-zinc-400: #a3a3a3;
     --color-zinc-500: #737373;
     --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
+    --color-zinc-700: #26394b;
+    --color-zinc-800: #142333;
+    --color-zinc-900: #0d1926;
+    --color-zinc-950: #070e17;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    --color-accent: #047857;
+    --color-accent-content: #047857;
     --color-accent-foreground: var(--color-white);
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
+        --color-accent: #6ee7b7;
+        --color-accent-content: #6ee7b7;
         --color-accent-foreground: var(--color-neutral-800);
     }
 }
@@ -64,3 +64,20 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* Shared identity network visual language. */
+.chain-surface { background-image: radial-gradient(ellipse at 80% 0%, #164b5033, transparent 55%); }
+.chain-grid { background-image: linear-gradient(#6ee7b708 1px, transparent 1px), linear-gradient(90deg, #6ee7b708 1px, transparent 1px); background-size: 44px 44px; }
+.chain-eyebrow { font-family: ui-monospace, monospace; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: #6ee7b7; }
+.chain-card { border: 1px solid #6ee7b72b; background: linear-gradient(145deg,#142b38,#0b1420); border-radius: 24px; box-shadow: 0 24px 80px #0004; }
+.chain-button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 22px; border-radius: 10px; font-size: .875rem; font-weight: 600; background: #6ee7b7; color: #071711; transition: background .2s, transform .2s; }
+.chain-button:hover { background: #a7f3d0; transform: translateY(-2px); }
+.chain-button.secondary { background: #ffffff06; color: #e4eaf1; border: 1px solid #ffffff26; }
+.chain-art { width: 100%; max-height: 290px; filter: drop-shadow(0 10px 24px #34d39918); }
+.chain-node { animation: chain-glow 5s ease-in-out infinite alternate; }
+@keyframes chain-glow { from { opacity: .55; } to { opacity: 1; } }
+a:focus-visible, button:focus-visible { outline: 2px solid #34d399; outline-offset: 5px; }
+.dark [data-flux-sidebar] { background: #0a1420; }
+.dark [data-flux-main] { background-image: radial-gradient(ellipse at top right,#164b5026,transparent 65%); }
+[data-flux-main] { min-width: 0; }
+@media (prefers-reduced-motion: reduce) { .chain-node { animation: none; } .chain-button { transition: none; } }

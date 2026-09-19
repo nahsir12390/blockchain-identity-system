@@ -7,7 +7,7 @@
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-zinc-950 text-white">
+    <body class="chain-surface min-h-screen bg-zinc-950 text-white">
         <main class="mx-auto min-h-screen w-full max-w-6xl px-6 py-8">
             <nav class="flex items-center justify-between">
                 <a href="{{ route('home') }}" class="font-semibold">DID ChainVault</a>
@@ -17,7 +17,7 @@
             <section class="grid gap-8 py-12 lg:grid-cols-[1fr_.8fr] lg:items-end">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Public verification portal</p>
-                    <h1 class="mt-4 max-w-3xl text-4xl font-semibold tracking-normal sm:text-5xl">Verify a decentralized identity proof</h1>
+                    <h1 class="mt-4 max-w-3xl text-4xl font-semibold tracking-normal sm:text-5xl">Trust the proof. Verify the identity.</h1>
                     <p class="mt-4 max-w-2xl text-sm leading-6 text-zinc-300">
                         Search by DID, transaction hash, or block hash to confirm identity status, ledger continuity, and smart-contract anchoring.
                     </p>
@@ -41,6 +41,7 @@
 
             <form method="GET" action="{{ route('verify.index') }}" class="grid gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-4 shadow-2xl shadow-black/20 sm:grid-cols-[1fr_auto]">
                 <input
+                    aria-label="DID, transaction hash, or block hash"
                     name="q"
                     value="{{ $query }}"
                     class="min-h-12 rounded-lg border border-white/10 bg-zinc-900 px-4 font-mono text-sm text-white outline-none focus:border-emerald-400"
