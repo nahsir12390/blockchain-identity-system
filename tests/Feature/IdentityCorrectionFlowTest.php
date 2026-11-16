@@ -115,7 +115,9 @@ class IdentityCorrectionFlowTest extends TestCase
 
     public function test_public_verifier_does_not_claim_unverified_identity_is_approved(): void
     {
-        $identity = $this->identityFor(User::factory()->create(), 'pending');
+        $owner = User::factory()->create();
+        $identity = $this->identityFor($owner, 'pending');
+        app(\\App\\Services\\IdentityLedger::class)->record($identity, 'identity.submitted', $owner);
 
         $this->get(route('verify.index', ['q' => $identity->did]))
             ->assertOk()
