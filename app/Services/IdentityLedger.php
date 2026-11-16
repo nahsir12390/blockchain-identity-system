@@ -61,7 +61,7 @@ class IdentityLedger
      */
     public function inspect(DigitalIdentity $identity): array
     {
-        $entries = $identity->ledgerEntries()->oldest('block_number')->get();
+        $entries = $identity->ledgerEntries()->reorder('block_number', 'asc')->get();
         $issues = [];
         $previousHash = null;
         $expectedBlockNumber = 1;
