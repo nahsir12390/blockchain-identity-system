@@ -50,9 +50,9 @@
                         @error('identity_number') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label for="document_file" class="text-sm font-medium text-zinc-950 dark:text-white">Supporting ID document (optional)</label>
-                        <p class="mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400">PDF, JPG, PNG or WEBP, up to 4 MB. The file is kept private for authorized review.</p>
-                        <input id="document_file" name="document_file" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="mt-3 block w-full rounded-lg border border-zinc-300 bg-white p-3 text-sm text-zinc-950 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white">
+                        <label for="document_file" class="text-sm font-medium text-zinc-950 dark:text-white">Supporting ID document *</label>
+                        <p class="mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400">PDF, JPG, PNG or WEBP, up to 4 MB. A document is required. The file is kept private for authorized review.</p>
+                        <input id="document_file" name="document_file" type="file" required accept=".pdf,.jpg,.jpeg,.png,.webp" class="mt-3 block w-full rounded-lg border border-zinc-300 bg-white p-3 text-sm text-zinc-950 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white">
                         @error('document_file') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
