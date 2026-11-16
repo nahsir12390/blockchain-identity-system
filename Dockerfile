@@ -56,6 +56,9 @@ RUN apt-get update \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
     && rm -rf /var/lib/apt/lists/*
 
+# Laravel accepts documents up to 4 MB; raise PHP's default 2 MB upload limit.
+RUN printf 'upload_max_filesize=8M\npost_max_size=10M\n' > /usr/local/etc/php/conf.d/identity-uploads.ini
+
 WORKDIR /var/www/html
 
 COPY --from=vendor /usr/bin/composer /usr/bin/composer

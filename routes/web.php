@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('identity', [IdentityController::class, 'index'])->name('identity.index');
     Route::get('identity/create', [IdentityController::class, 'create'])->name('identity.create');
     Route::post('identity', [IdentityController::class, 'store'])->name('identity.store');
+    Route::post('identity/{identity}/document', [IdentityController::class, 'attachDocument'])->name('identity.document.attach');
     Route::get('identity/{identity}/document', [IdentityController::class, 'document'])->name('identity.document');
     Route::get('identity/{identity}/certificate', [IdentityController::class, 'certificate'])->name('identity.certificate');
     Route::get('identity/{identity}/edit', [IdentityController::class, 'edit'])->name('identity.edit');
