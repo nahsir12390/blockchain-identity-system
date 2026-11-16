@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\DigitalIdentity;
 use App\Models\User;
 use App\Services\IdentityHasher;
+use App\Services\IdentityLedger;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -117,7 +118,7 @@ class IdentityCorrectionFlowTest extends TestCase
     {
         $owner = User::factory()->create();
         $identity = $this->identityFor($owner, 'pending');
-        app(\App\Services\IdentityLedger::class)->record($identity, 'identity.submitted', $owner);
+        app(IdentityLedger::class)->record($identity, 'identity.submitted', $owner);
 
         $this->get(route('verify.index', ['q' => $identity->did]))
             ->assertOk()
