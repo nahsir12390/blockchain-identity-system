@@ -8,6 +8,8 @@ use App\Services\BlockchainIdentityRegistry;
 use App\Services\IdentityLedger;
 use App\Services\IdentityWorkflow;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class IdentityReviewController extends Controller
@@ -18,7 +20,7 @@ class IdentityReviewController extends Controller
         private readonly IdentityWorkflow $workflow,
     ) {}
 
-    public function index()
+    public function index(): View
     {
         return view('admin.identities.index', [
             'identities' => DigitalIdentity::query()
@@ -28,14 +30,14 @@ class IdentityReviewController extends Controller
         ]);
     }
 
-    public function show(DigitalIdentity $identity)
+    public function show(DigitalIdentity $identity): View
     {
         return view('admin.identities.show', [
             'identity' => $identity->load('user', 'verifier', 'ledgerEntries.actor'),
         ]);
     }
 
-    public function verify(DigitalIdentity $identity)
+    public function verify(DigitalIdentity $identity): RedirectResponse
     {
         $this->workflow->assertCan($identity, 'verified');
 
@@ -71,7 +73,7 @@ class IdentityReviewController extends Controller
         return to_route('admin.identities.show', $identity)->with('status', 'Identity verified and recorded on the proof ledger.');
     }
 
-    public function reject(Request $request, DigitalIdentity $identity)
+    public function reject(Request $request, DigitalIdentity $identity): RedirectResponse
     {
         $validated = $request->validate([
             'rejection_reason' => ['required', 'string', 'max:1000'],
@@ -112,7 +114,7 @@ class IdentityReviewController extends Controller
         return to_route('admin.identities.show', $identity)->with('status', 'Identity rejected with audit proof.');
     }
 
-    public function revoke(DigitalIdentity $identity)
+    public function revoke(DigitalIdentity $identity): RedirectResponse
     {
         $this->workflow->assertCan($identity, 'revoked');
 
