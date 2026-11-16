@@ -10,7 +10,7 @@ class PublicVerificationController extends Controller
 {
     public function __construct(private readonly IdentityLedger $ledger) {}
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = trim((string) $request->query('q'));
         $identity = null;
