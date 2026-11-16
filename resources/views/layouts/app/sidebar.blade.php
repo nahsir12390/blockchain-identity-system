@@ -11,20 +11,22 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('My Account')" class="grid">
+                <flux:sidebar.group :heading="auth()->user()->is_admin ? __('Administration') : __('My Account')" class="grid">
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="layout-grid" :href="route('identity.index')" :current="request()->routeIs('identity.*')">
-                        {{ __('My Identity') }}
-                    </flux:sidebar.item>
+                    @unless (auth()->user()->is_admin)
+                        <flux:sidebar.item icon="layout-grid" :href="route('identity.index')" :current="request()->routeIs('identity.*')">
+                            {{ __('My Identity') }}
+                        </flux:sidebar.item>
+                    @endunless
                     <flux:sidebar.item icon="book-open-text" :href="route('verify.index')" target="_blank">
                         {{ __('Verify Identity') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
                 @if (auth()->user()->is_admin)
-                    <flux:sidebar.group :heading="__('Administration')" class="grid">
+                    <flux:sidebar.group :heading="__('Manage System')" class="grid">
                         <flux:sidebar.item icon="folder-git-2" :href="route('admin.identities.index')" :current="request()->routeIs('admin.identities.*')">
                             {{ __('Review Identities') }}
                         </flux:sidebar.item>
