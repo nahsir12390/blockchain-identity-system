@@ -1,15 +1,15 @@
-<x-layouts::app :title="__('My Decentralized Identity')">
+<x-layouts::app :title="__('My Identity')">
     <div class="space-y-6">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-300">DID Wallet</p>
-                <h1 class="mt-2 text-2xl font-semibold text-zinc-950 dark:text-white">My Decentralized Identity</h1>
-                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Manage your DID, smart-contract anchor, verification status, and proof trail.</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-300">My Identity</p>
+                <h1 class="mt-2 text-2xl font-semibold text-zinc-950 dark:text-white">My Digital Identity</h1>
+                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">See your digital identity, review status, and verification history.</p>
             </div>
 
             @unless ($identity)
                 <a href="{{ route('identity.create') }}" class="inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200">
-                    Create identity
+                    Create Digital Identity
                 </a>
             @endunless
         </div>
@@ -25,18 +25,18 @@
                 <div class="grid gap-0 lg:grid-cols-[1fr_.9fr]">
                     <div class="p-8">
                         <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">No identity record yet</p>
-                        <h2 class="mt-3 text-2xl font-semibold text-zinc-950 dark:text-white">Create a tamper-evident identity profile</h2>
+                        <h2 class="mt-3 text-2xl font-semibold text-zinc-950 dark:text-white">Create your digital identity</h2>
                         <p class="mt-3 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                            Your sensitive identity data is converted to keyed hashes. The system records every lifecycle action as a local block and anchors proofs to the smart contract when the blockchain node is online.
+                            Submit your details to receive a unique digital identity ID (DID). An administrator can then review your submission.
                         </p>
                         <a href="{{ route('identity.create') }}" class="mt-6 inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">
-                            Start DID enrollment
+                            Create Digital Identity
                         </a>
                     </div>
                     <div class="border-t border-zinc-200 bg-zinc-950 p-8 text-white dark:border-zinc-700 lg:border-s lg:border-t-0">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Identity lifecycle</p>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">What happens next</p>
                         <div class="mt-5 space-y-4">
-                            @foreach (['Submit hashed proof', 'Admin verification', 'Smart-contract anchor', 'Public DID verification'] as $step)
+                            @foreach (['Submit your information', 'Administrator reviews it', 'Your status is recorded', 'Share your DID to check its status'] as $step)
                                 <div class="flex gap-3">
                                     <div class="mt-1 size-3 rounded-full bg-emerald-300"></div>
                                     <p class="text-sm text-zinc-200">{{ $step }}</p>
@@ -60,7 +60,7 @@
                     <div class="p-6 sm:p-8">
                         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                             <div>
-                                <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Decentralized identifier</p>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Your Digital Identity ID (DID)</p>
                                 <p class="mt-3 break-all font-mono text-base font-semibold text-zinc-950 dark:text-white">{{ $identity->did }}</p>
                             </div>
                             <span class="w-fit rounded-full px-3 py-1 text-xs font-semibold {{ $statusClass }}">
@@ -104,7 +104,7 @@
                     </div>
 
                     <div class="border-t border-zinc-200 bg-zinc-950 p-6 text-white dark:border-zinc-700 lg:border-s lg:border-t-0">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Proof Passport</p>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Technical proof details</p>
                         <div class="mt-5 space-y-4 text-sm">
                             <div>
                                 <p class="text-xs text-zinc-400">Transaction hash</p>
@@ -151,8 +151,8 @@
 
             <section class="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
                 <div class="border-b border-zinc-200 p-5 dark:border-zinc-700">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Block Explorer</p>
-                    <h2 class="mt-2 font-semibold text-zinc-950 dark:text-white">Proof ledger timeline</h2>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Verification history</p>
+                    <h2 class="mt-2 font-semibold text-zinc-950 dark:text-white">What happened to my identity?</h2>
                 </div>
                 <div class="divide-y divide-zinc-200 dark:divide-zinc-700">
                     @foreach ($identity->ledgerEntries as $entry)
@@ -177,7 +177,7 @@
                                 </dl>
                                 @if ($entry->blockchain_tx_hash)
                                     <div class="mt-3 rounded-lg border border-cyan-200 bg-cyan-50 p-3 text-xs dark:border-cyan-900 dark:bg-cyan-950/40">
-                                        <p class="font-semibold text-cyan-800 dark:text-cyan-200">On-chain proof confirmed</p>
+                                        <p class="font-semibold text-cyan-800 dark:text-cyan-200">Blockchain transaction recorded</p>
                                         <p class="mt-1 break-all font-mono text-cyan-700 dark:text-cyan-300">{{ $entry->blockchain_tx_hash }}</p>
                                     </div>
                                 @endif
