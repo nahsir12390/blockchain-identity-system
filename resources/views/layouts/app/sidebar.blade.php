@@ -11,46 +11,40 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Identity Network')" class="grid">
+                <flux:sidebar.group :heading="__('My Account')" class="grid">
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')">
-                        {{ __('Command Center') }}
+                        {{ __('Dashboard') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="layout-grid" :href="route('identity.index')" :current="request()->routeIs('identity.*')">
-                        {{ __('DID Wallet') }}
+                        {{ __('My Identity') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="book-open-text" :href="route('verify.index')" target="_blank">
-                        {{ __('Public Verifier') }}
+                        {{ __('Verify Identity') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
                 @if (auth()->user()->is_admin)
-                    <flux:sidebar.group :heading="__('Security Operations')" class="grid">
+                    <flux:sidebar.group :heading="__('Administration')" class="grid">
                         <flux:sidebar.item icon="folder-git-2" :href="route('admin.identities.index')" :current="request()->routeIs('admin.identities.*')">
-                            {{ __('Review Queue') }}
+                            {{ __('Review Identities') }}
                         </flux:sidebar.item>
                         <flux:sidebar.item icon="book-open-text" :href="route('admin.audit.index')" :current="request()->routeIs('admin.audit.*')">
-                            {{ __('Threat Audit') }}
+                            {{ __('Audit Log') }}
                         </flux:sidebar.item>
                         <flux:sidebar.item icon="book-open-text" :href="route('admin.ledger.index')" :current="request()->routeIs('admin.ledger.*')">
-                            {{ __('Proof Explorer') }}
+                            {{ __('Ledger Records') }}
                         </flux:sidebar.item>
                         <flux:sidebar.item icon="folder-git-2" :href="route('admin.smart-contract.index')" :current="request()->routeIs('admin.smart-contract.*')">
-                            {{ __('Contract Console') }}
+                            {{ __('Blockchain Settings') }}
                         </flux:sidebar.item>
                         <flux:sidebar.item icon="layout-grid" :href="route('admin.users.index')" :current="request()->routeIs('admin.users.*')">
-                            {{ __('Access Control') }}
+                            {{ __('Users') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
                 @endif
             </flux:sidebar.nav>
 
             <flux:spacer />
-
-            <div class="mx-3 mb-3 rounded-xl border border-emerald-400/20 bg-zinc-950 p-4 text-white">
-                <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Chain Status</p>
-                <p class="mt-2 text-sm font-semibold">{{ config('blockchain.enabled') ? 'Anchoring enabled' : 'Local proof mode' }}</p>
-                <p class="mt-2 truncate font-mono text-[11px] text-zinc-400">{{ config('blockchain.network') }}</p>
-            </div>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>
