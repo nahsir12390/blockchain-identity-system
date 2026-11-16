@@ -3,14 +3,14 @@
         <section class="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-300">Verifier Operations</p>
-                    <h1 class="mt-2 text-2xl font-semibold text-zinc-950 dark:text-white">Identity Review Queue</h1>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-300">Administration</p>
+                    <h1 class="mt-2 text-2xl font-semibold text-zinc-950 dark:text-white">Review Submitted Identities</h1>
                     <p class="mt-2 max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                        Review submitted decentralized identities, inspect document proofs, and commit decisions to the proof ledger.
+                        Open a submission, read the details and supporting document, then approve or reject it. Rejected users can correct their information and submit it again.
                     </p>
                 </div>
                 <div class="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-950">
-                    <p class="text-xs text-zinc-500 dark:text-zinc-400">Submissions</p>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400">Total submissions</p>
                     <p class="mt-1 text-xl font-semibold text-zinc-950 dark:text-white">{{ $identities->total() }}</p>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                             <p class="font-semibold text-zinc-950 dark:text-white">{{ $identity->user->name }}</p>
                             <span class="w-fit rounded-full px-3 py-1 text-xs font-semibold {{ $statusClass }}">{{ ucfirst($identity->status) }}</span>
                             @if ($identity->document_path)
-                                <span class="w-fit rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200">Document attached</span>
+                                <span class="w-fit rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200">Document available</span>
                             @endif
                         </div>
                         <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{{ $identity->user->email }}</p>
@@ -52,12 +52,12 @@
                         </div>
                     </div>
                     <a href="{{ route('admin.identities.show', $identity) }}" class="inline-flex justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200">
-                        Open review
+                        Review details
                     </a>
                 </article>
             @empty
                 <div class="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
-                    No identity submissions yet.
+                    No submissions yet. New identity requests will appear here.
                 </div>
             @endforelse
         </section>
