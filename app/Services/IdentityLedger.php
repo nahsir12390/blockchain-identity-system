@@ -16,7 +16,7 @@ class IdentityLedger
     public function record(DigitalIdentity $identity, string $action, ?User $actor = null, array $metadata = []): LedgerEntry
     {
         $lastEntry = $identity->ledgerEntries()->latest('block_number')->first();
-        $blockNumber = ((int) ($lastEntry?->block_number ?? 0)) + 1;
+        $blockNumber = ((int) ($lastEntry ? $lastEntry->block_number : 0)) + 1;
         $recordedAt = now();
         $metadata = $this->canonicalize($metadata);
 
@@ -92,7 +92,7 @@ class IdentityLedger
             if (blank($entry->canonical_payload)) {
                 $issues[] = "Block {$entry->block_number} was created with the legacy hash format and cannot be fully recomputed.";
             } else {
-                $expectedPayloadHash = $this->hash($entry->canonical_payload);
+                $expectedPayloadHash = $this->hash((array) $entry->canonical_payload);
                 $expectedEntryHash = $this->hash([
                     'payload_hash' => $expectedPayloadHash,
                     'previous_hash' => $entry->previous_hash,
@@ -113,10 +113,9 @@ class IdentityLedger
             $expectedBlockNumber++;
         }
 
-        $latestHash = $entries->last()?->entry_hash;
-
         $latestEntry = $entries->last();
-        $expectedTransactionHash = $latestEntry?->blockchain_tx_hash ?: $latestHash;
+        $latestHash = $latestEntry->entry_hash;
+        $expectedTransactionHash = $latestEntry->blockchain_tx_hash ?: $latestHash;
 
         if ($identity->transaction_hash && $identity->status === 'verified' && $identity->transaction_hash !== $expectedTransactionHash) {
             $issues[] = 'The verified identity transaction hash does not match the latest local or on-chain ledger proof.';
