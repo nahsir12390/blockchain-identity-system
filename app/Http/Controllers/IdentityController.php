@@ -53,7 +53,7 @@ class IdentityController extends Controller
             'wallet_address' => ['nullable', 'string', 'max:255'],
             'public_key' => ['nullable', 'string', 'max:500'],
             'document_reference' => ['nullable', 'string', 'max:255'],
-            'document_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:4096'],
+            'document_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
         $documentPath = null;
@@ -75,6 +75,8 @@ class IdentityController extends Controller
                 Str::lower((string) Str::ulid()).'.'.$document->getClientOriginalExtension(),
                 'local',
             );
+
+            abort_unless(is_string($documentPath) && $documentPath !== '', 500, 'Document could not be saved. Please try again.');
         }
 
         $identity = DigitalIdentity::create([
@@ -121,6 +123,59 @@ class IdentityController extends Controller
         ]);
 
         return to_route('identity.index')->with('status', 'Identity submitted for verification.');
+    }
+
+    public function attachDocument(Request $request, DigitalIdentity $identity): RedirectResponse
+    {
+        abort_unless($identity->user_id === Auth::id() && ! Auth::user()->is_admin, 403);
+        abort_unless($identity->status === 'pending', 422, 'Only pending identities can receive a missing document.');
+        abort_if(filled($identity->document_path) || filled($identity->document_hash), 422, 'A document has already been attached.');
+
+        $validated = $request->validate([
+            'document_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:4096'],
+        ]);
+
+        $document = $validated['document_file'];
+        $path = $document->storeAs(
+            'identity-documents/'.Auth::id(),
+            Str::lower((string) Str::ulid()).'.'.$document->getClientOriginalExtension(),
+            'local',
+        );
+
+        abort_unless(is_string($path) && $path !== '', 500, 'Document could not be saved. Please try again.');
+
+        $identity->update([
+            'document_hash' => hash_file('sha256', Storage::disk('local')->path($path)),
+            'document_path' => $path,
+            'document_original_name' => $document->getClientOriginalName(),
+            'document_mime_type' => $document->getMimeType(),
+            'document_size' => $document->getSize(),
+        ]);
+
+        $entry = $this->ledger->record($identity, 'identity.document_attached', Auth::user(), [
+            'document_hash' => $identity->document_hash,
+        ]);
+        $localBlockHash = hash('sha256', $entry->entry_hash.'|document_attached|'.$identity->did);
+        $anchor = $this->blockchain->anchor($identity, 'identity.document_attached', $localBlockHash);
+
+        if ($anchor) {
+            $entry->update([
+                'blockchain_network' => $anchor['network'] ?? config('blockchain.network'),
+                'blockchain_tx_hash' => $anchor['transaction_hash'] ?? null,
+                'contract_address' => $anchor['contract_address'] ?? null,
+                'onchain_status' => $anchor['status'] ?? null,
+                'onchain_receipt' => $anchor,
+            ]);
+        }
+
+        $identity->update([
+            'blockchain_network' => $anchor['network'] ?? config('blockchain.network', 'Local Proof Chain'),
+            'contract_address' => $anchor['contract_address'] ?? $identity->contract_address,
+            'transaction_hash' => $anchor['transaction_hash'] ?? $entry->entry_hash,
+            'block_hash' => $localBlockHash,
+        ]);
+
+        return to_route('identity.index')->with('status', 'Your identity document was uploaded successfully and is ready for admin review.');
     }
 
     public function document(DigitalIdentity $identity): StreamedResponse
