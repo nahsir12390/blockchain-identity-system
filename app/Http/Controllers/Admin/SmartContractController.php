@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 use App\Models\DigitalIdentity;
 use App\Services\BlockchainIdentityRegistry;
 
@@ -10,7 +11,7 @@ class SmartContractController extends Controller
 {
     public function __construct(private readonly BlockchainIdentityRegistry $blockchain) {}
 
-    public function index()
+    public function index(): View
     {
         $deployment = null;
 
