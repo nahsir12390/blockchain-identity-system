@@ -9,11 +9,11 @@ use App\Services\IdentityLedger;
 use App\Services\IdentityWorkflow;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class IdentityController extends Controller
 {
@@ -22,7 +22,9 @@ class IdentityController extends Controller
         private readonly BlockchainIdentityRegistry $blockchain,
         private readonly IdentityHasher $hasher,
         private readonly IdentityWorkflow $workflow,
-    ) {}
+    )
+    {
+    }
 
     public function index(): View
     {
@@ -124,7 +126,7 @@ class IdentityController extends Controller
     public function document(DigitalIdentity $identity): StreamedResponse
     {
         abort_unless($identity->user_id === Auth::id() || Auth::user()->is_admin, 403);
-        abort_if(blank($identity->document_path) || ! Storage::disk('local')->exists($identity->document_path), 404);
+        abort_if(blank($identity->document_path) || !Storage::disk('local')->exists($identity->document_path), 404);
 
         return Storage::disk('local')->download(
             $identity->document_path,
