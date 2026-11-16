@@ -92,7 +92,9 @@ class IdentityLedger
             if (blank($entry->canonical_payload)) {
                 $issues[] = "Block {$entry->block_number} was created with the legacy hash format and cannot be fully recomputed.";
             } else {
-                $expectedPayloadHash = $this->hash((array) $entry->canonical_payload);
+                /** @var array<string, mixed> $canonicalPayload */
+                $canonicalPayload = $entry->canonical_payload;
+                $expectedPayloadHash = $this->hash($canonicalPayload);
                 $expectedEntryHash = $this->hash([
                     'payload_hash' => $expectedPayloadHash,
                     'previous_hash' => $entry->previous_hash,
