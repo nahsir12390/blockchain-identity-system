@@ -26,7 +26,7 @@ class IdentityController extends Controller
 
     public function index(): View
     {
-        $identity = Auth::user()->digitalIdentity?->load('ledgerEntries.actor');
+        $identity = Auth::user()->digitalIdentity()->with('ledgerEntries.actor')->first();
 
         return view('identities.index', [
             'identity' => $identity,
