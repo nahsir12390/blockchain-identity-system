@@ -5,7 +5,7 @@
                 <h1 class="text-2xl font-semibold text-zinc-950 dark:text-white">Review Identity</h1>
                 <p class="mt-1 break-all font-mono text-sm text-zinc-600 dark:text-zinc-400">{{ $identity->did }}</p>
             </div>
-            <a href="{{ route('admin.identities.index') }}" class="text-sm font-medium text-zinc-700 underline dark:text-zinc-200">Back to queue</a>
+            <a href="{{ route('admin.identities.index') }}" class="text-sm font-medium text-zinc-700 underline dark:text-zinc-200">Back to submissions</a>
         </div>
 
         @if (session('status'))
@@ -16,7 +16,7 @@
 
         <div class="grid gap-4 lg:grid-cols-3">
             <div class="rounded-xl border border-zinc-200 p-5 dark:border-zinc-700 lg:col-span-2">
-                <h2 class="font-semibold text-zinc-950 dark:text-white">Applicant details</h2>
+                <h2 class="font-semibold text-zinc-950 dark:text-white">Submitted information</h2>
                 <dl class="mt-5 grid gap-4 sm:grid-cols-2">
                     <div>
                         <dt class="text-xs text-zinc-500 dark:text-zinc-400">User</dt>
@@ -35,11 +35,11 @@
                         <dd class="mt-1 text-sm font-medium text-zinc-950 dark:text-white">{{ ucfirst($identity->status) }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">Identity number hash</dt>
+                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">ID number fingerprint (technical)</dt>
                         <dd class="mt-1 break-all font-mono text-xs text-zinc-950 dark:text-white">{{ $identity->identity_number_hash }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">Document proof</dt>
+                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">Supporting document</dt>
                         <dd class="mt-2">
                             @if ($identity->document_path)
                                 <a href="{{ route('identity.document', $identity) }}" class="inline-flex rounded-lg bg-zinc-950 px-3 py-2 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200">
@@ -55,24 +55,24 @@
                         </dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">Blockchain transaction</dt>
-                        <dd class="mt-1 break-all font-mono text-xs text-zinc-950 dark:text-white">{{ $identity->transaction_hash ?: 'Not anchored yet' }}</dd>
+                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">Proof reference (technical)</dt>
+                        <dd class="mt-1 break-all font-mono text-xs text-zinc-950 dark:text-white">{{ $identity->ledgerEntries->first()?->blockchain_tx_hash ?: 'Local record only (no confirmed blockchain transaction)' }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">Contract address</dt>
+                        <dt class="text-xs text-zinc-500 dark:text-zinc-400">Smart contract address (technical)</dt>
                         <dd class="mt-1 break-all font-mono text-xs text-zinc-950 dark:text-white">{{ $identity->contract_address ?: 'Local ledger only' }}</dd>
                     </div>
                 </dl>
             </div>
 
             <div class="rounded-xl border border-zinc-200 p-5 dark:border-zinc-700">
-                <h2 class="font-semibold text-zinc-950 dark:text-white">Decision</h2>
+                <h2 class="font-semibold text-zinc-950 dark:text-white">Your decision</h2><p class="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">Review the submitted information first. Approve only if you have sufficient evidence. If rejecting, explain what the applicant must correct.</p>
                 <div class="mt-4 space-y-3">
                     @if ($identity->status === 'pending')
                         <form method="POST" action="{{ route('admin.identities.verify', $identity) }}">
                             @csrf
                             @method('PATCH')
-                            <button class="w-full rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Verify identity</button>
+                            <button class="w-full rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Approve identity</button>
                         </form>
                     @endif
 
@@ -80,7 +80,7 @@
                         <form method="POST" action="{{ route('admin.identities.revoke', $identity) }}">
                             @csrf
                             @method('PATCH')
-                            <button class="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">Revoke identity</button>
+                            <button class="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">Revoke approval</button>
                         </form>
                     @endif
                 </div>
@@ -89,10 +89,10 @@
                     <form method="POST" action="{{ route('admin.identities.reject', $identity) }}" class="mt-5 space-y-3">
                         @csrf
                         @method('PATCH')
-                        <label for="rejection_reason" class="text-sm font-medium text-zinc-950 dark:text-white">Reject with reason</label>
-                        <textarea id="rejection_reason" name="rejection_reason" rows="4" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"></textarea>
+                        <label for="rejection_reason" class="text-sm font-medium text-zinc-950 dark:text-white">Reason for rejection *</label>
+                        <textarea id="rejection_reason" name="rejection_reason" rows="4" required maxlength="1000" placeholder="Explain what needs to be corrected..." class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"></textarea>
                         @error('rejection_reason') <p class="text-sm text-rose-600">{{ $message }}</p> @enderror
-                        <button class="w-full rounded-lg bg-rose-700 px-4 py-2 text-sm font-medium text-white hover:bg-rose-800">Reject identity</button>
+                        <button class="w-full rounded-lg bg-rose-700 px-4 py-2 text-sm font-medium text-white hover:bg-rose-800">Reject and send reason</button>
                     </form>
                 @endif
 
@@ -106,7 +106,7 @@
 
         <div class="rounded-xl border border-zinc-200 dark:border-zinc-700">
             <div class="border-b border-zinc-200 p-5 dark:border-zinc-700">
-                <h2 class="font-semibold text-zinc-950 dark:text-white">Ledger trail</h2>
+                <h2 class="font-semibold text-zinc-950 dark:text-white">Record history (technical)</h2>
             </div>
             <div class="divide-y divide-zinc-200 dark:divide-zinc-700">
                 @foreach ($identity->ledgerEntries as $entry)
