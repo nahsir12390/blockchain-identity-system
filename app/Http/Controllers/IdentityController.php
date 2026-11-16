@@ -129,18 +129,64 @@ class IdentityController extends Controller
         );
     }
 
+    public function edit(DigitalIdentity $identity)
+    {
+        abort_unless($identity->user_id === Auth::id(), 403);
+        abort_unless($identity->status === 'rejected', 422, 'Only rejected identities can be corrected.');
+
+        return view('identities.edit', ['identity' => $identity]);
+    }
+
     public function resubmit(Request $request, DigitalIdentity $identity)
     {
         abort_unless($identity->user_id === Auth::id(), 403);
         $this->workflow->assertCan($identity, 'pending');
 
-        $identity->update([
+        $validated = $request->validate([
+            'legal_name' => ['required', 'string', 'max:255'],
+            'identity_type' => ['required', 'in:National ID,Student ID,Passport,Driver License'],
+            'identity_number' => ['nullable', 'string', 'max:120'],
+            'document_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:4096'],
+        ]);
+
+        $changes = [
+            'legal_name' => $validated['legal_name'],
+            'identity_type' => $validated['identity_type'],
             'status' => 'pending',
             'rejection_reason' => null,
             'submitted_at' => now(),
+        ];
+
+        if (filled($validated['identity_number'] ?? null)) {
+            $changes['identity_number_hash'] = $this->hasher->hash($validated['identity_number']);
+        }
+
+        $previousDocumentPath = $identity->document_path;
+        if ($request->hasFile('document_file')) {
+            $document = $request->file('document_file');
+            $changes['document_hash'] = hash_file('sha256', $document->getRealPath());
+            $changes['document_original_name'] = $document->getClientOriginalName();
+            $changes['document_mime_type'] = $document->getMimeType();
+            $changes['document_size'] = $document->getSize();
+            $changes['document_path'] = $document->storeAs(
+                'identity-documents/'.Auth::id(),
+                Str::lower((string) Str::ulid()).'.'.$document->getClientOriginalExtension(),
+                'local',
+            );
+        }
+
+        $identity->update($changes);
+
+        if (isset($changes['document_path']) && $previousDocumentPath) {
+            Storage::disk('local')->delete($previousDocumentPath);
+        }
+
+        $entry = $this->ledger->record($identity, 'identity.resubmitted', Auth::user(), [
+            'details_updated' => true,
+            'document_replaced' => isset($changes['document_path']),
+            'identity_number_changed' => isset($changes['identity_number_hash']),
         ]);
 
-        $entry = $this->ledger->record($identity, 'identity.resubmitted', Auth::user());
         $localBlockHash = hash('sha256', $entry->entry_hash.'|resubmitted|'.$identity->did);
         $anchor = $this->blockchain->anchor($identity, 'identity.resubmitted', $localBlockHash);
 
@@ -152,16 +198,16 @@ class IdentityController extends Controller
                 'onchain_status' => $anchor['status'] ?? null,
                 'onchain_receipt' => $anchor,
             ]);
-
-            $identity->update([
-                'blockchain_network' => $anchor['network'] ?? config('blockchain.network'),
-                'contract_address' => $anchor['contract_address'] ?? null,
-                'transaction_hash' => $anchor['transaction_hash'] ?? $entry->entry_hash,
-                'block_hash' => $localBlockHash,
-            ]);
         }
 
-        return to_route('identity.index')->with('status', 'Identity resubmitted for review.');
+        $identity->update([
+            'blockchain_network' => $anchor['network'] ?? config('blockchain.network', 'Local Proof Chain'),
+            'contract_address' => $anchor['contract_address'] ?? $identity->contract_address,
+            'transaction_hash' => $anchor['transaction_hash'] ?? $entry->entry_hash,
+            'block_hash' => $localBlockHash,
+        ]);
+
+        return to_route('identity.index')->with('status', 'Your corrected identity has been submitted for another review.');
     }
 
     public function certificate(DigitalIdentity $identity)
