@@ -35,6 +35,7 @@ class IdentityController extends Controller
 
     public function create(): View
     {
+        abort_if(Auth::user()->is_admin, 403, 'Administrators cannot create personal identities.');
         abort_if(Auth::user()->digitalIdentity()->exists(), 403);
 
         return view('identities.create');
@@ -42,6 +43,7 @@ class IdentityController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        abort_if(Auth::user()->is_admin, 403, 'Administrators cannot create personal identities.');
         abort_if(Auth::user()->digitalIdentity()->exists(), 403);
 
         $validated = $request->validate([
