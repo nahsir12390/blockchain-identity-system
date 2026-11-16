@@ -117,7 +117,7 @@ class IdentityCorrectionFlowTest extends TestCase
     {
         $owner = User::factory()->create();
         $identity = $this->identityFor($owner, 'pending');
-        app(\\App\\Services\\IdentityLedger::class)->record($identity, 'identity.submitted', $owner);
+        app(\App\Services\IdentityLedger::class)->record($identity, 'identity.submitted', $owner);
 
         $this->get(route('verify.index', ['q' => $identity->did]))
             ->assertOk()
