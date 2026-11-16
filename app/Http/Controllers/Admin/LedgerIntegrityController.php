@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 use App\Models\DigitalIdentity;
 use App\Services\IdentityLedger;
 
@@ -10,7 +11,7 @@ class LedgerIntegrityController extends Controller
 {
     public function __construct(private readonly IdentityLedger $ledger) {}
 
-    public function index()
+    public function index(): View
     {
         $identities = DigitalIdentity::query()
             ->with('user')
