@@ -96,7 +96,17 @@
                                     @elseif ($identity->document_hash)
                                         <p class="break-all font-mono text-xs text-zinc-950 dark:text-white">{{ $identity->document_hash }}</p>
                                     @else
-                                        <p class="text-sm text-zinc-500 dark:text-zinc-400">No document proof attached</p>
+                                        <p class="text-sm font-semibold text-amber-800 dark:text-amber-200">No document attached yet.</p>
+                                        @if ($identity->status === 'pending')
+                                            <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">Your identity was submitted without a supporting document. Upload it below so the administrator can review it.</p>
+                                            <form method="POST" action="{{ route('identity.document.attach', $identity) }}" enctype="multipart/form-data" class="mt-4 space-y-3">
+                                                @csrf
+                                                <label for="missing_document_file" class="block text-sm font-medium text-zinc-950 dark:text-white">Add your ID document (PDF or image, up to 4 MB)</label>
+                                                <input id="missing_document_file" name="document_file" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" required class="block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white">
+                                                @error('document_file') <p class="text-xs text-rose-600">{{ $message }}</p> @enderror
+                                                <button type="submit" class="inline-flex min-h-10 items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Upload document</button>
+                                            </form>
+                                        @endif
                                     @endif
                                 </dd>
                             </div>
