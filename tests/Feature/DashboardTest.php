@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\DigitalIdentity;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
