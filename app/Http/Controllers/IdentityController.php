@@ -7,6 +7,9 @@ use App\Services\BlockchainIdentityRegistry;
 use App\Services\IdentityHasher;
 use App\Services\IdentityLedger;
 use App\Services\IdentityWorkflow;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +24,7 @@ class IdentityController extends Controller
         private readonly IdentityWorkflow $workflow,
     ) {}
 
-    public function index()
+    public function index(): View
     {
         $identity = Auth::user()->digitalIdentity?->load('ledgerEntries.actor');
 
@@ -30,14 +33,14 @@ class IdentityController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         abort_if(Auth::user()->digitalIdentity()->exists(), 403);
 
         return view('identities.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         abort_if(Auth::user()->digitalIdentity()->exists(), 403);
 
@@ -118,7 +121,7 @@ class IdentityController extends Controller
         return to_route('identity.index')->with('status', 'Identity submitted for verification.');
     }
 
-    public function document(DigitalIdentity $identity)
+    public function document(DigitalIdentity $identity): StreamedResponse
     {
         abort_unless($identity->user_id === Auth::id() || Auth::user()->is_admin, 403);
         abort_if(blank($identity->document_path) || ! Storage::disk('local')->exists($identity->document_path), 404);
@@ -129,7 +132,7 @@ class IdentityController extends Controller
         );
     }
 
-    public function edit(DigitalIdentity $identity)
+    public function edit(DigitalIdentity $identity): View
     {
         abort_unless($identity->user_id === Auth::id(), 403);
         abort_unless($identity->status === 'rejected', 422, 'Only rejected identities can be corrected.');
@@ -137,7 +140,7 @@ class IdentityController extends Controller
         return view('identities.edit', ['identity' => $identity]);
     }
 
-    public function resubmit(Request $request, DigitalIdentity $identity)
+    public function resubmit(Request $request, DigitalIdentity $identity): RedirectResponse
     {
         abort_unless($identity->user_id === Auth::id(), 403);
         $this->workflow->assertCan($identity, 'pending');
@@ -210,7 +213,7 @@ class IdentityController extends Controller
         return to_route('identity.index')->with('status', 'Your corrected identity has been submitted for another review.');
     }
 
-    public function certificate(DigitalIdentity $identity)
+    public function certificate(DigitalIdentity $identity): View
     {
         abort_unless($identity->user_id === Auth::id() || Auth::user()->is_admin, 403);
         abort_unless($identity->status === 'verified', 404);
