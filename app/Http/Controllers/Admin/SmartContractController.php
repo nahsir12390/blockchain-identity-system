@@ -9,9 +9,7 @@ use Illuminate\Contracts\View\View;
 
 class SmartContractController extends Controller
 {
-    public function __construct(private readonly BlockchainIdentityRegistry $blockchain)
-    {
-    }
+    public function __construct(private readonly BlockchainIdentityRegistry $blockchain) {}
 
     public function index(): View
     {
