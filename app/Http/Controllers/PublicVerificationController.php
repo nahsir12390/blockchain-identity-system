@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DigitalIdentity;
+use Illuminate\Contracts\View\View;
 use App\Services\IdentityLedger;
 use Illuminate\Http\Request;
 
