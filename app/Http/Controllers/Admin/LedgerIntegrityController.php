@@ -9,9 +9,7 @@ use Illuminate\Contracts\View\View;
 
 class LedgerIntegrityController extends Controller
 {
-    public function __construct(private readonly IdentityLedger $ledger)
-    {
-    }
+    public function __construct(private readonly IdentityLedger $ledger) {}
 
     public function index(): View
     {
