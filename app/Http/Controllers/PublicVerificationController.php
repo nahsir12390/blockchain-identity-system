@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\DigitalIdentity;
-use Illuminate\Contracts\View\View;
 use App\Services\IdentityLedger;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class PublicVerificationController extends Controller
 {
-    public function __construct(private readonly IdentityLedger $ledger) {}
+    private readonly IdentityLedger $ledger;
+
+    public function __construct(IdentityLedger $ledger)
+    {
+        $this->ledger = $ledger;
+    }
 
     public function index(Request $request): View
     {
