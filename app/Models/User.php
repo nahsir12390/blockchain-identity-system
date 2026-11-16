@@ -48,6 +48,7 @@ class User extends Authenticatable
         ];
     }
 
+    /** @return HasOne<DigitalIdentity, $this> */
     public function digitalIdentity(): HasOne
     {
         return $this->hasOne(DigitalIdentity::class);

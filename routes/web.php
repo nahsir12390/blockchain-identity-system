@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('identity', [IdentityController::class, 'store'])->name('identity.store');
     Route::get('identity/{identity}/document', [IdentityController::class, 'document'])->name('identity.document');
     Route::get('identity/{identity}/certificate', [IdentityController::class, 'certificate'])->name('identity.certificate');
+    Route::get('identity/{identity}/edit', [IdentityController::class, 'edit'])->name('identity.edit');
     Route::patch('identity/{identity}/resubmit', [IdentityController::class, 'resubmit'])->name('identity.resubmit');
 
     Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {

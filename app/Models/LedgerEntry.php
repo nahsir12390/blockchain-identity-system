@@ -36,11 +36,13 @@ class LedgerEntry extends Model
         ];
     }
 
+    /** @return BelongsTo<DigitalIdentity, $this> */
     public function digitalIdentity(): BelongsTo
     {
         return $this->belongsTo(DigitalIdentity::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function actor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'actor_id');

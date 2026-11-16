@@ -17,12 +17,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        $email = config('demo.admin_email');
+        $password = config('demo.admin_password');
+
+        // Never create a privileged account with predictable default credentials.
+        if (blank($email) || blank($password)) {
+            return;
+        }
+
         User::updateOrCreate(
-            ['email' => env('DEMO_ADMIN_EMAIL', 'admin@example.com')],
+            ['email' => $email],
             [
-                'name' => env('DEMO_ADMIN_NAME', 'System Admin'),
+                'name' => config('demo.admin_name', 'Demo Administrator'),
                 'email_verified_at' => now(),
-                'password' => env('DEMO_ADMIN_PASSWORD', 'password'),
+                'password' => $password,
                 'is_admin' => true,
             ],
         );
