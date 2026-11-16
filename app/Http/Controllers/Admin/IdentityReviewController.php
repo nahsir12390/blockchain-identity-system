@@ -18,9 +18,7 @@ class IdentityReviewController extends Controller
         private readonly IdentityLedger $ledger,
         private readonly BlockchainIdentityRegistry $blockchain,
         private readonly IdentityWorkflow $workflow,
-    )
-    {
-    }
+    ) {}
 
     public function index(): View
     {
